@@ -40,6 +40,7 @@ export default function Home() {
 
   if (error)
     return <div>Error</div>
+    
   const addBookmarkSubmit = () => {
     addBookmark({
       variables: {
