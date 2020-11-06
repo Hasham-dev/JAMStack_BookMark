@@ -1,10 +1,12 @@
 import React from "react"
-import {useQuery,useMutation} from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
 
 const BookMarksQuery = gql`{
   bookmark{
     url
+    desc
+    id
   }
 }`
 const AddBookMarkMutation = gql`
@@ -16,30 +18,43 @@ const AddBookMarkMutation = gql`
 `
 
 export default function Home() {
-  
-  const {loading,error,data} = useQuery(BookMarksQuery);
+
+  const { loading, error, data } = useQuery(BookMarksQuery);
   const [addBookmark] = useMutation(AddBookMarkMutation)
   let textfield, desc;
-  const addBookmarkSubmit =()=>{
+  const addBookmarkSubmit = () => {
     addBookmark({
-      variables:{
-        url:textfield.value,
+      variables: {
+        url: textfield.value,
         desc: desc.value
-      }
+      },
+      refetchQueries: [{ query: BookMarksQuery }],
     })
-    console.log('textfiled',textfield.value);
-    console.log('description',desc.value);
+    console.log('textfiled', textfield.value);
+    console.log('description', desc.value);
   }
-return( <div>
-  <p>
-  {JSON.stringify(data)}
-  </p>
-  <div>
-    <input type="text" placeholder="URL" ref={node => textfield=node} />
-    <br/>
-    <input type="text" placeholder="Description" ref={node => desc=node} />
+  return (<div>
+    <div>
+      <input type="text" placeholder="URL" ref={node => textfield = node} />
+      <br />
+      <input type="text" placeholder="Description" ref={node => desc = node} />
 
-    <button onClick={addBookmarkSubmit}>Add BookMark</button>
-  </div>
+      <button onClick={addBookmarkSubmit}>Add BookMark</button>
+    </div>
+    <p>
+      {/* {JSON.stringify(data)} */}
+      {/* {console.log(data)} */}
+      {data.bookmark.map((d) => {
+        console.log(d);
+        return (
+          <div key={d.ts}>
+            <h1>
+            {d.url}
+            </h1>
+        <p>{d.desc}</p>
+          </div>
+        )
+      })}
+    </p>
   </div>)
 }
