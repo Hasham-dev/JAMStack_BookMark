@@ -1,6 +1,8 @@
 import React from "react"
 import { useQuery, useMutation } from '@apollo/client'
 import gql from 'graphql-tag'
+import { Link } from 'gatsby';
+
 
 const BookMarksQuery = gql`{
   bookmark{
@@ -20,8 +22,14 @@ const AddBookMarkMutation = gql`
 export default function Home() {
 
   const { loading, error, data } = useQuery(BookMarksQuery);
-  const [addBookmark] = useMutation(AddBookMarkMutation)
+  const [addBookmark] = useMutation(AddBookMarkMutation);
   let textfield, desc;
+
+  if(loading)
+  return <div>Loading...</div>
+
+  if(error)
+  return <div>Error</div>
   const addBookmarkSubmit = () => {
     addBookmark({
       variables: {
@@ -41,20 +49,17 @@ export default function Home() {
 
       <button onClick={addBookmarkSubmit}>Add BookMark</button>
     </div>
-    <p>
-      {/* {JSON.stringify(data)} */}
       {/* {console.log(data)} */}
-      {data.bookmark.map((d) => {
-        console.log(d);
+      {data.bookmark.map((bm) => {
+        console.log(bm);
         return (
-          <div key={d.ts}>
-            <h1>
-            {d.url}
-            </h1>
-        <p>{d.desc}</p>
+          <div key={bm.ts}>
+            <Link to={bm.url}>
+            {bm.url}
+            </Link>
+        <p>{bm.desc}</p>
           </div>
         )
       })}
-    </p>
   </div>)
 }
