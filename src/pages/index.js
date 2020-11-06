@@ -40,7 +40,7 @@ export default function Home() {
 
   if (error)
     return <div>Error</div>
-    
+
   const addBookmarkSubmit = () => {
     addBookmark({
       variables: {
@@ -91,13 +91,13 @@ export default function Home() {
           <p>{bm.desc}</p> */}
             <Paper elevation={3} className="List">
               <Grid container spacing={1}>
-                <Grid item >
+                <Grid item  xs={12}>
                   <p className="Desc">{bm.desc}</p>
                 </Grid>
-                <Grid item>
+                <Grid item xs={12}>
                   <p className="Url"><b>URL :</b> {bm.url}</p>
                 </Grid>
-                <Grid item>
+                <Grid item xs={12}>
 
                   <Link to={bm.url} target="_blank" className="Url-Btn">
                     <Button className="Url-btn-wrap">
