@@ -61,7 +61,9 @@ export default function Home() {
       refetchQueries: [{ query: BookMarksQuery }],
     })
     console.log('textfiled', textfield.value);
-    console.log('description', desc.value);
+    console.log('description', desc.value); 
+    textfield.value = '';
+    desc.value = '';
   }
   const handleDelete = (id) => {
     console.log(JSON.stringify(id))
