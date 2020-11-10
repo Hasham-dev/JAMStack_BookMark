@@ -13,6 +13,7 @@ const typeDefs = gql`
   }
   type Mutation {
     addBookmark(url: String!, desc: String!) : Bookmark
+    deleteTask(id: ID!): Bookmark
   }
 `
 
@@ -35,8 +36,9 @@ const resolvers = {
           )
         )
         return result.data.map(d => {
+          console.log(d.ref.id);
           return {
-            id: d.ts,
+            id: d.ref.id,
             url: d.data.url,
             desc: d.data.desc,
           }
@@ -45,9 +47,9 @@ const resolvers = {
       catch (err) {
         console.log('err', err);
       }
-    
+
+    },
   },
-},
   Mutation: {
     addBookmark: async (_, { url, desc }) => {
       try {
@@ -55,23 +57,39 @@ const resolvers = {
         var result = await client.query(
           q.Create(
             q.Collection('links'),
-            { data: { 
-              url,
-              desc
-             } },
+            {
+              data: {
+                url,
+                desc
+              }
+            },
           )
 
         );
         console.log("Document Created and Inserted in Container: " + result.ref.id);
         return result.ref.data
 
-      } 
-      catch (error){
-          console.log('Error: ');
-          console.log(error);
+      }
+      catch (error) {
+        console.log('Error: ');
+        console.log(error);
       }
       console.log('url--desc', url, desc);
-    }
+    },
+    deleteTask: async (_, { id }) => {
+      try {
+        const reqId = JSON.stringify(id);
+        const reqId2 = JSON.parse(id);
+        console.log(id);
+        var adminClient = new faunadb.Client({ secret: 'fnAD56A0rjACBw0m-hNGEbQIhNV-hfO2A4ku6nln' });
+        const result = await adminClient.query(
+          q.Delete(q.Ref(q.Collection("links"), id))
+        );
+        console.log(result);
+        return result.ref.data;
+      } catch (error) {
+        return error.toString();
+      }}
   }
 }
 

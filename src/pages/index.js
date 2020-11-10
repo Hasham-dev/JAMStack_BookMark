@@ -24,10 +24,21 @@ const AddBookMarkMutation = gql`
   }
 `
 
+const deleteTodo = gql`
+  mutation deleteTask($id: ID!) {
+    deleteTask(id: $id) {
+      id
+    }
+  }
+`;
+
 export default function Home() {
 
   const { loading, error, data } = useQuery(BookMarksQuery);
   const [addBookmark] = useMutation(AddBookMarkMutation);
+  const [deleteTask] = useMutation(deleteTodo);
+
+ 
   let textfield, desc;
 
   if (loading)
@@ -52,6 +63,15 @@ export default function Home() {
     console.log('textfiled', textfield.value);
     console.log('description', desc.value);
   }
+  const handleDelete = (id) => {
+    console.log(JSON.stringify(id))
+    deleteTask({
+      variables: {
+        id: id,
+      },
+      refetchQueries: [{ query: BookMarksQuery }],
+    });
+  };
   return (<div>
     <div className="Contain">
 
@@ -105,6 +125,10 @@ export default function Home() {
                       Visit the Bookmark
                       </Button>
                   </Link>
+                  <Button onClick={() => handleDelete(bm.id)} className="Url-btn-wrap">
+
+                      Delete
+                      </Button>
                 </Grid>
               </Grid>
             </Paper>
